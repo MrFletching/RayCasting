@@ -7,7 +7,7 @@ public class World {
 	
 	public World() {
 		map = new Map();
-		player = new Player(4, 7, 0);
+		player = new Player(5.5, 6, 0);
 	}
 	
 	public Map getMap() {

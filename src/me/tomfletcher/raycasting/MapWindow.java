@@ -97,16 +97,12 @@ public class MapWindow {
 			boolean collision = false;
 			double rayLength = Double.MAX_VALUE;
 			
-			double playerYOffset;
-			double xDiff;
+			double playerYOffset = playerY % 1;
+			double xDiff = -Math.tan(rayAngle)*yDir;
 			int yTile = (int)playerY + yDir;
 			
 			if(yDir == 1) {
-				playerYOffset = 1-(playerY % 1);
-				xDiff = Math.tan(Math.PI-rayAngle);
-			} else {
-				playerYOffset = playerY % 1;
-				xDiff = Math.tan(rayAngle);
+				playerYOffset = 1-playerYOffset;
 			}
 			
 			double x = playerX + xDiff*playerYOffset;
@@ -117,10 +113,9 @@ public class MapWindow {
 				if(map.getWallAt(xTile, yTile) == 1) {
 					collision = true;
 					rayX = x;
-					if(yDir == 1) {
-						rayY = yTile;
-					} else {
-						rayY = yTile + 1;
+					rayY = yTile;
+					if(yDir == -1) {
+						rayY++;
 					}
 					
 					double dx = rayX - playerX;
@@ -137,16 +132,12 @@ public class MapWindow {
 			int xDir = (rayAngle < Math.PI) ? 1 : -1;
 			collision = false;
 			
-			double playerXOffset;
-			double yDiff;
+			double playerXOffset = playerX % 1;
+			double yDiff = Math.tan(rayAngle-Math.PI/2)*xDir;
 			int xTile = (int)playerX + xDir;
 			
 			if(xDir == 1) {
-				playerXOffset = 1-(playerX % 1);
-				yDiff = Math.tan(rayAngle-Math.PI/2);
-			} else {
-				playerXOffset = playerX % 1;
-				yDiff = Math.tan(Math.PI*3/2-rayAngle);
+				playerXOffset = 1-playerXOffset;
 			}
 			
 			double y = playerY + yDiff*playerXOffset;
@@ -157,11 +148,9 @@ public class MapWindow {
 				if(map.getWallAt(xTile, yTile) == 1) {
 					collision = true;
 					double newRayY = y;
-					double newRayX;
-					if(xDir == 1) {
-						newRayX = xTile;
-					} else {
-						newRayX = xTile + 1;
+					double newRayX = xTile;
+					if(xDir == -1) {
+						newRayX++;
 					}
 					
 					double dx = newRayX - playerX;
