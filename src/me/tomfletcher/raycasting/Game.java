@@ -37,6 +37,7 @@ public class Game implements Runnable {
 			world.update();
 			
 			mapWindow.render();
+			gameWindow.render();
 			
 			// TODO: Improve game loop
 			try {

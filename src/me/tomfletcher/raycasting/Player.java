@@ -25,6 +25,6 @@ public class Player {
 	}
 	
 	public void update() {
-		angle += 0.02;
+		angle += 0.01;
 	}
 }
