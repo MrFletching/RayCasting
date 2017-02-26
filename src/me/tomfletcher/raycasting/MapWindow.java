@@ -90,47 +90,38 @@ public class MapWindow {
 			double rayY = playerY-Math.cos(rayAngle)*RAY_LENGTH;
 			
 			// Get horizontal collision
-			boolean dirDown = (rayAngle > Math.PI/2) && (rayAngle < Math.PI*3/2);
+			int yDir = (rayAngle > Math.PI/2) && (rayAngle < Math.PI*3/2) ? 1 : -1;
 			boolean collision = false;
 			
-			if(dirDown) {
-				double playerYOffset = 1-(playerY % 1);
-				double xDiff = Math.tan(Math.PI-rayAngle);
-				
-				double x = playerX + xDiff*playerYOffset;
-				int yTile = (int)playerY + 1;
-				
-				while(!collision) {
-					int xTile = (int) x;
-					
-					if(map.getWallAt(xTile, yTile) == 1) {
-						collision = true;
-						rayX = x;
-						rayY = yTile;
-					}
-					
-					x += xDiff;
-					yTile += 1;
-				}
+			double playerYOffset;
+			double xDiff;
+			int yTile = (int)playerY + yDir;
+			
+			if(yDir == 1) {
+				playerYOffset = 1-(playerY % 1);
+				xDiff = Math.tan(Math.PI-rayAngle);
 			} else {
-				double playerYOffset = playerY % 1;
-				double xDiff = Math.tan(rayAngle);
+				playerYOffset = playerY % 1;
+				xDiff = Math.tan(rayAngle);
+			}
+			
+			double x = playerX + xDiff*playerYOffset;
+			
+			while(!collision) {
+				int xTile = (int) x;
 				
-				double x = playerX + xDiff*playerYOffset;
-				int yTile = (int)playerY - 1;
-				
-				while(!collision) {
-					int xTile = (int) x;
-					
-					if(map.getWallAt(xTile, yTile) == 1) {
-						collision = true;
-						rayX = x;
+				if(map.getWallAt(xTile, yTile) == 1) {
+					collision = true;
+					rayX = x;
+					if(yDir == 1) {
+						rayY = yTile;
+					} else {
 						rayY = yTile + 1;
 					}
-					
-					x += xDiff;
-					yTile -= 1;
 				}
+				
+				x += xDiff;
+				yTile += yDir;
 			}
 			
 			
