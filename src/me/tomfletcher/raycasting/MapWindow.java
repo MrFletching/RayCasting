@@ -85,6 +85,9 @@ public class MapWindow {
 			double rayAngleDiff = Math.atan2(viewportX, GameWindow.DISTANCE_TO_VIEWPORT);
 			
 			double rayAngle = (angle + rayAngleDiff) % (Math.PI*2);
+			if(rayAngle < 0) {
+				rayAngle += Math.PI*2;
+			}
 			
 			double rayX = playerX+Math.sin(rayAngle)*RAY_LENGTH;
 			double rayY = playerY-Math.cos(rayAngle)*RAY_LENGTH;
