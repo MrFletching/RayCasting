@@ -155,7 +155,7 @@ public class GameWindow {
 			}
 			
 			// TODO: Fix magic number
-			double wallHeight = 1000/rayLength;
+			double wallHeight = 1000/(rayLength*Math.cos(rayAngleDiff));
 			g.drawLine(i, (int)(HEIGHT/2-wallHeight/2), i, (int)(HEIGHT/2+wallHeight/2));
 		}
 		
