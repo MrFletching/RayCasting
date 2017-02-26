@@ -84,10 +84,56 @@ public class MapWindow {
 			double viewportX = (GameWindow.VIEWPORT_WIDTH/GameWindow.WIDTH)*i - GameWindow.VIEWPORT_WIDTH/2;
 			double rayAngleDiff = Math.atan2(viewportX, GameWindow.DISTANCE_TO_VIEWPORT);
 			
-			double rayAngle = angle + rayAngleDiff;
+			double rayAngle = (angle + rayAngleDiff) % (Math.PI*2);
 			
 			double rayX = playerX+Math.sin(rayAngle)*RAY_LENGTH;
 			double rayY = playerY-Math.cos(rayAngle)*RAY_LENGTH;
+			
+			// Get horizontal collision
+			boolean dirDown = (rayAngle > Math.PI/2) && (rayAngle < Math.PI*3/2);
+			boolean collision = false;
+			
+			if(dirDown) {
+				double playerYOffset = 1-(playerY % 1);
+				double xDiff = Math.tan(Math.PI-rayAngle);
+				
+				double x = playerX + xDiff*playerYOffset;
+				int yTile = (int)playerY + 1;
+				
+				while(!collision) {
+					int xTile = (int) x;
+					
+					if(map.getWallAt(xTile, yTile) == 1) {
+						collision = true;
+						rayX = x;
+						rayY = yTile;
+					}
+					
+					x += xDiff;
+					yTile += 1;
+				}
+			} else {
+				double playerYOffset = playerY % 1;
+				double xDiff = Math.tan(rayAngle);
+				
+				double x = playerX + xDiff*playerYOffset;
+				int yTile = (int)playerY - 1;
+				
+				while(!collision) {
+					int xTile = (int) x;
+					
+					if(map.getWallAt(xTile, yTile) == 1) {
+						collision = true;
+						rayX = x;
+						rayY = yTile + 1;
+					}
+					
+					x += xDiff;
+					yTile -= 1;
+				}
+			}
+			
+			
 			int rayPX = (int)(rayX*TILE_SIZE);
 			int rayPY = (int)(rayY*TILE_SIZE);
 			g.drawLine(playerPX, playerPY, rayPX, rayPY);

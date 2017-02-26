@@ -65,7 +65,11 @@ public class GameWindow {
 			double rayAngle = (angle + rayAngleDiff) % Math.PI*2;
 			
 			// Get horizontal collision
+			boolean dirDown = (rayAngle > Math.PI/2) && (rayAngle < Math.PI*3/2);
 			
+			if(dirDown) {
+				
+			}
 			
 		}
 		
