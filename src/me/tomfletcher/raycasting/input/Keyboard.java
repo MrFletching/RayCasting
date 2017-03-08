@@ -19,9 +19,13 @@ public class Keyboard extends KeyAdapter {
 	
 	public void setKey(int keyCode, boolean b) {
 		switch(keyCode) {
+			case KeyEvent.VK_W: 
 			case KeyEvent.VK_UP: up = b; return;
+			case KeyEvent.VK_S:
 			case KeyEvent.VK_DOWN: down = b; return;
+			case KeyEvent.VK_A:
 			case KeyEvent.VK_LEFT: left = b; return;
+			case KeyEvent.VK_D:
 			case KeyEvent.VK_RIGHT: right = b; return;
 		}
 	}
