@@ -7,6 +7,8 @@ import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
 
+import me.tomfletcher.raycasting.input.Keyboard;
+
 public class GameWindow {
 	
 	public static final int WIDTH = 800;
@@ -25,6 +27,7 @@ public class GameWindow {
 		this.world = world;
 		
 		this.canvas = new Canvas();
+		canvas.addKeyListener(new Keyboard());
 		canvas.setSize(WIDTH, HEIGHT);
 		
 		frame = new JFrame("Ray Casting Game");
@@ -34,6 +37,7 @@ public class GameWindow {
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		canvas.requestFocus();
 	}
 	
 	public void render() {
