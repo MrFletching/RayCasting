@@ -29,10 +29,20 @@ public class GameWindow {
 	
 	private World world;
 	
+	private double[] rayAngleDiffs;
+	
 	public GameWindow(World world) {
 		this.world = world;
 		
 		rayEndPoints = new double[WIDTH][2];
+		
+		// Calculate ray angle differences for each screen column
+		rayAngleDiffs = new double[WIDTH];
+		
+		for(int i = 0; i < WIDTH; i++) {
+			double viewportX = (VIEWPORT_WIDTH/WIDTH)*i - VIEWPORT_WIDTH/2;
+			rayAngleDiffs[i] = Math.atan2(viewportX, DISTANCE_TO_VIEWPORT);
+		}
 		
 		this.canvas = new Canvas();
 		canvas.addKeyListener(new Keyboard());
@@ -80,11 +90,7 @@ public class GameWindow {
 		g.setColor(Color.BLACK);
 		
 		for(int i = 0; i < WIDTH; i++) {
-			// TODO: Only calculate rayAngleDiff values once
-			double viewportX = (VIEWPORT_WIDTH/WIDTH)*i - VIEWPORT_WIDTH/2;
-			double rayAngleDiff = Math.atan2(viewportX, DISTANCE_TO_VIEWPORT);
-			
-			double rayAngle = (angle + rayAngleDiff) % (Math.PI*2);
+			double rayAngle = (angle + rayAngleDiffs[i]) % (Math.PI*2);
 			if(rayAngle < 0) {
 				rayAngle += Math.PI*2;
 			}
@@ -169,7 +175,7 @@ public class GameWindow {
 				xTile += xDir;
 			}
 			
-			double distanceToWall = rayLength*Math.cos(rayAngleDiff);
+			double distanceToWall = rayLength*Math.cos(rayAngleDiffs[i]);
 			
 			// Store ray end points
 			rayEndPoints[i][0] = rayX;
