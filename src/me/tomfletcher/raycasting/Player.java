@@ -47,7 +47,6 @@ public class Player {
 			y -= Math.sin(angle)*speed;
 		}
 		
-		System.out.println(Mouse.dx);
 		angle += Mouse.dx*rotationSpeed;
 	}
 }
