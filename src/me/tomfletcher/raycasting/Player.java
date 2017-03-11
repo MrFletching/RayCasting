@@ -11,7 +11,10 @@ public class Player {
 	private double speed = 0.1;
 	private double rotationSpeed = 0.005;
 	
-	public Player(double x, double y, double angle) {
+	private World world;
+	
+	public Player(World world, double x, double y, double angle) {
+		this.world = world;
 		this.x = x;
 		this.y = y;
 		this.angle = angle;
@@ -31,22 +34,36 @@ public class Player {
 	
 	public void update() {
 		
+		double moveX = 0;
+		double moveY = 0;
+		
 		if(Keyboard.up) {
-			x += Math.sin(angle)*speed;
-			y -= Math.cos(angle)*speed;
+			moveX = Math.sin(angle)*speed;
+			moveY =-Math.cos(angle)*speed;
 		} else if(Keyboard.down) {
-			x -= Math.sin(angle)*speed;
-			y += Math.cos(angle)*speed;
+			moveX =-Math.sin(angle)*speed;
+			moveY = Math.cos(angle)*speed;
 		}
 		
 		if(Keyboard.right) {
-			x += Math.cos(angle)*speed;
-			y += Math.sin(angle)*speed;
+			moveX = Math.cos(angle)*speed;
+			moveY = Math.sin(angle)*speed;
 		} else if(Keyboard.left) {
-			x -= Math.cos(angle)*speed;
-			y -= Math.sin(angle)*speed;
+		    moveX =-Math.cos(angle)*speed;
+			moveY =-Math.sin(angle)*speed;
 		}
 		
+		// Check for x collisions
+		if(world.isSpaceAt(x+moveX, y)) {
+			x += moveX;
+		}
+		
+		// Check for y collisions
+		if(world.isSpaceAt(x, y+moveY)) {
+			y += moveY;
+		}
+		
+		// Turn around
 		angle += Mouse.dx*rotationSpeed;
 	}
 }

@@ -7,7 +7,7 @@ public class World {
 	
 	public World() {
 		map = new Map();
-		player = new Player(5.5, 6, 0);
+		player = new Player(this, 5.5, 6, 0);
 	}
 	
 	public Map getMap() {
@@ -20,5 +20,9 @@ public class World {
 	
 	public void update() {
 		player.update();
+	}
+	
+	public boolean isSpaceAt(double x, double y) {
+		return (map.getWallAt((int)x, (int)y) == 0);
 	}
 }
