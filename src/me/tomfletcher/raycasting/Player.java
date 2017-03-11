@@ -5,11 +5,14 @@ import me.tomfletcher.raycasting.input.Mouse;
 
 public class Player {
 	
+	private static final double RADIUS = 0.3;
+	
 	private double x;
 	private double y;
 	private double angle;
 	private double speed = 0.1;
 	private double rotationSpeed = 0.005;
+	
 	
 	private World world;
 	
@@ -54,16 +57,24 @@ public class Player {
 		}
 		
 		// Check for x collisions
-		if(world.isSpaceAt(x+moveX, y)) {
+		if(canMoveTo(x+moveX, y)) {
 			x += moveX;
 		}
 		
 		// Check for y collisions
-		if(world.isSpaceAt(x, y+moveY)) {
+		if(canMoveTo(x, y+moveY)) {
 			y += moveY;
 		}
 		
 		// Turn around
 		angle += Mouse.dx*rotationSpeed;
+	}
+	
+	private boolean canMoveTo(double newX, double newY) {
+		// Check four corners are empty
+		return world.isSpaceAt(newX-RADIUS, newY-RADIUS) &&
+			   world.isSpaceAt(newX-RADIUS, newY+RADIUS) &&
+			   world.isSpaceAt(newX+RADIUS, newY-RADIUS) &&
+			   world.isSpaceAt(newX+RADIUS, newY+RADIUS);
 	}
 }
