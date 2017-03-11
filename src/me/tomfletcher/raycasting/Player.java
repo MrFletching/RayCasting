@@ -14,7 +14,7 @@ public class Player {
 	public Player(double x, double y, double angle) {
 		this.x = x;
 		this.y = y;
-		this.angle = 1;
+		this.angle = angle;
 	}
 	
 	public double getX() {
