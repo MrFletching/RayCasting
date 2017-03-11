@@ -17,13 +17,13 @@ public class Game implements Runnable {
 		start();
 	}
 	
-	private void start() {
+	public void start() {
 		running = true;
 		thread = new Thread(this, "Game");
 		thread.start();
 	}
 	
-	private void stop() {
+	public void stop() {
 		running = false;
 		try {
 			thread.join();

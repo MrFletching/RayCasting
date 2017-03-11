@@ -67,9 +67,6 @@ public class GameWindow {
 		double playerY = player.getY();
 		double angle = player.getAngle();
 		
-		int playerTileX = (int) playerX;
-		int playerTileY = (int) playerY;
-		
 		Map map = world.getMap();
 		
 		// Draw walls
