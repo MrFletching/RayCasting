@@ -44,7 +44,7 @@ public class GameWindow {
 	}
 	
 	public void update() {
-		Mouse.moveMouse(frame.getX(), frame.getY(), WIDTH/2, HEIGHT/2);
+		Mouse.moveMouse(canvas.getLocationOnScreen().x, canvas.getLocationOnScreen().y, WIDTH/2, HEIGHT/2);
 	}
 	
 	public void render() {
