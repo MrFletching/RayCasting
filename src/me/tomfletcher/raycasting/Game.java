@@ -41,14 +41,26 @@ public class Game implements Runnable {
 		long lastStatsTimeNS = startTimeNS;
 		
 		int frames = 0;
+		int totalUpdateTime = 0;
+		int totalRenderTime = 0;
 		
 		while(running) {
+			// UPDATE
+			long startUpdateTime = System.currentTimeMillis();
+			
 			gameWindow.update();
 			world.update();
+			
+			totalUpdateTime += System.currentTimeMillis() - startUpdateTime;
+			
+			// RENDER
+			long startRenderTime = System.currentTimeMillis();
 			
 			mapWindow.render();
 			gameWindow.render();
 			frames++;
+			
+			totalRenderTime += System.currentTimeMillis() - startRenderTime;
 			
 			long endTimeNS = System.nanoTime();
 			long diffTimeNS = endTimeNS - startTimeNS;
@@ -66,10 +78,12 @@ public class Game implements Runnable {
 			startTimeNS = System.nanoTime();
 			
 			if(endTimeNS > lastStatsTimeNS + 1000000000) {
-				System.out.println("FPS: "+frames);
+				System.out.println(String.format("FPS: %2d     Update Time: %3d     Render Time: %3d", frames, totalUpdateTime, totalRenderTime));
 				
 				lastStatsTimeNS += 1000000000;
 				frames = 0;
+				totalUpdateTime = 0;
+				totalRenderTime = 0;
 			}
 		}
 	}
