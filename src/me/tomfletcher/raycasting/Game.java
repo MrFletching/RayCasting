@@ -2,6 +2,9 @@ package me.tomfletcher.raycasting;
 
 public class Game implements Runnable {
 	
+	private static final int FPS = 60;
+	private static final int FRAME_TIME_NS = 1000000000 / FPS;
+	
 	private Thread thread;
 	private boolean running = false;
 	
@@ -33,18 +36,40 @@ public class Game implements Runnable {
 	}
 	
 	public void run() {
+		
+		long startTimeNS = System.nanoTime();
+		long lastStatsTimeNS = startTimeNS;
+		
+		int frames = 0;
+		
 		while(running) {
 			gameWindow.update();
 			world.update();
 			
 			mapWindow.render();
 			gameWindow.render();
+			frames++;
 			
-			// TODO: Improve game loop
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			long endTimeNS = System.nanoTime();
+			long diffTimeNS = endTimeNS - startTimeNS;
+			
+			long sleepTimeNS = FRAME_TIME_NS - diffTimeNS;
+			
+			if(sleepTimeNS > 0) {
+				try {
+					Thread.sleep(sleepTimeNS / 1000000, (int)(sleepTimeNS % 1000000));
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			startTimeNS = System.nanoTime();
+			
+			if(endTimeNS > lastStatsTimeNS + 1000000000) {
+				System.out.println("FPS: "+frames);
+				
+				lastStatsTimeNS += 1000000000;
+				frames = 0;
 			}
 		}
 	}

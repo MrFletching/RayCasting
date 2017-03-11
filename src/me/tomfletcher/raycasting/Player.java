@@ -10,8 +10,8 @@ public class Player {
 	private double x;
 	private double y;
 	private double angle;
-	private double speed = 0.1;
-	private double rotationSpeed = 0.005;
+	private double speed = 0.05;
+	private double rotationSpeed = 0.004;
 	
 	
 	private World world;
