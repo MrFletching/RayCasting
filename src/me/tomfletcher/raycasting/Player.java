@@ -41,33 +41,35 @@ public class Player {
 		double moveY = 0;
 		
 		if(Keyboard.up) {
-			moveX = Math.sin(angle)*speed;
-			moveY =-Math.cos(angle)*speed;
+			moveX += Math.sin(angle)*speed;
+			moveY -= Math.cos(angle)*speed;
 		} else if(Keyboard.down) {
-			moveX =-Math.sin(angle)*speed;
-			moveY = Math.cos(angle)*speed;
+			moveX -= Math.sin(angle)*speed;
+			moveY += Math.cos(angle)*speed;
 		}
 		
 		if(Keyboard.right) {
-			moveX = Math.cos(angle)*speed;
-			moveY = Math.sin(angle)*speed;
+			moveX += Math.cos(angle)*speed;
+			moveY += Math.sin(angle)*speed;
 		} else if(Keyboard.left) {
-		    moveX =-Math.cos(angle)*speed;
-			moveY =-Math.sin(angle)*speed;
+		    moveX -= Math.cos(angle)*speed;
+			moveY -= Math.sin(angle)*speed;
 		}
 		
 		// Check for x collisions
-		if(canMoveTo(x+moveX, y)) {
+		if(moveX != 0 && canMoveTo(x+moveX, y)) {
 			x += moveX;
 		}
 		
 		// Check for y collisions
-		if(canMoveTo(x, y+moveY)) {
+		if(moveY != 0 && canMoveTo(x, y+moveY)) {
 			y += moveY;
 		}
 		
 		// Turn around
-		angle += Mouse.dx*rotationSpeed;
+		if(Mouse.dx != 0) {
+			angle += Mouse.dx*rotationSpeed;
+		}
 	}
 	
 	private boolean canMoveTo(double newX, double newY) {
