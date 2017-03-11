@@ -31,6 +31,7 @@ public class GameWindow {
 		canvas.addKeyListener(new Keyboard());
 		canvas.addMouseMotionListener(new Mouse());
 		canvas.setSize(WIDTH, HEIGHT);
+		canvas.setCursor(Mouse.createBlankCursor());
 		
 		frame = new JFrame("Ray Casting Game");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

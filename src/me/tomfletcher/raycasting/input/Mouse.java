@@ -1,9 +1,13 @@
 package me.tomfletcher.raycasting.input;
 
 import java.awt.AWTException;
+import java.awt.Cursor;
+import java.awt.Point;
 import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.image.BufferedImage;
 
 public class Mouse extends MouseMotionAdapter {
 	
@@ -26,5 +30,13 @@ public class Mouse extends MouseMotionAdapter {
 		} catch (AWTException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static Cursor createBlankCursor() {
+		BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+
+		Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
+		
+		return blankCursor;
 	}
 }
