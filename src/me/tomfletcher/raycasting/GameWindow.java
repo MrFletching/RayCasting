@@ -8,6 +8,7 @@ import java.awt.image.BufferStrategy;
 import javax.swing.JFrame;
 
 import me.tomfletcher.raycasting.input.Keyboard;
+import me.tomfletcher.raycasting.input.Mouse;
 
 public class GameWindow {
 	
@@ -28,6 +29,7 @@ public class GameWindow {
 		
 		this.canvas = new Canvas();
 		canvas.addKeyListener(new Keyboard());
+		canvas.addMouseMotionListener(new Mouse());
 		canvas.setSize(WIDTH, HEIGHT);
 		
 		frame = new JFrame("Ray Casting Game");
@@ -38,6 +40,10 @@ public class GameWindow {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		canvas.requestFocus();
+	}
+	
+	public void update() {
+		Mouse.moveMouse(frame.getX(), frame.getY(), WIDTH/2, HEIGHT/2);
 	}
 	
 	public void render() {

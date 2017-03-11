@@ -1,6 +1,7 @@
 package me.tomfletcher.raycasting;
 
 import me.tomfletcher.raycasting.input.Keyboard;
+import me.tomfletcher.raycasting.input.Mouse;
 
 public class Player {
 	
@@ -8,6 +9,7 @@ public class Player {
 	private double y;
 	private double angle;
 	private double speed = 0.1;
+	private double rotationSpeed = 0.005;
 	
 	public Player(double x, double y, double angle) {
 		this.x = x;
@@ -44,5 +46,8 @@ public class Player {
 			x -= Math.cos(angle)*speed;
 			y -= Math.sin(angle)*speed;
 		}
+		
+		System.out.println(Mouse.dx);
+		angle += Mouse.dx*rotationSpeed;
 	}
 }

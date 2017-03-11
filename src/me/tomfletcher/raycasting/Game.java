@@ -34,6 +34,7 @@ public class Game implements Runnable {
 	
 	public void run() {
 		while(running) {
+			gameWindow.update();
 			world.update();
 			
 			mapWindow.render();
