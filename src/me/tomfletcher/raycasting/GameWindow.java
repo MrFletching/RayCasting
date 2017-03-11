@@ -12,12 +12,17 @@ import me.tomfletcher.raycasting.input.Mouse;
 
 public class GameWindow {
 	
-	public static final int WIDTH = 800;
+	public static final int WIDTH = 1000;
 	public static final int HEIGHT = 600;
 	
-	public static final double DISTANCE_TO_VIEWPORT = 1;
 	public static final double VIEWPORT_WIDTH = 1;
-	public static final double VIEWPORT_HEIGHT = VIEWPORT_WIDTH*HEIGHT/WIDTH;
+	public static final double PX_PER_UNIT = WIDTH/VIEWPORT_WIDTH;
+	public static final double VIEWPORT_HEIGHT = HEIGHT*PX_PER_UNIT;
+	
+	public static final double DISTANCE_TO_VIEWPORT = 1;
+	public static final double DISTANCE_TO_VIEWPORT_PX = DISTANCE_TO_VIEWPORT*PX_PER_UNIT;
+	
+	public static double[][] rayEndPoints;
 	
 	private JFrame frame;
 	private Canvas canvas;
@@ -26,6 +31,8 @@ public class GameWindow {
 	
 	public GameWindow(World world) {
 		this.world = world;
+		
+		rayEndPoints = new double[WIDTH][2];
 		
 		this.canvas = new Canvas();
 		canvas.addKeyListener(new Keyboard());
@@ -82,10 +89,10 @@ public class GameWindow {
 				rayAngle += Math.PI*2;
 			}
 			
-			double rayX;
-			double rayY;
+			double rayX = playerX;
+			double rayY = playerY;
 			
-			// Get horizontal collision
+			// Get collision between ray and horizontal wall
 			int yDir = (rayAngle > Math.PI/2) && (rayAngle < Math.PI*3/2) ? 1 : -1;
 			boolean collision = false;
 			double rayLength = Double.MAX_VALUE;
@@ -121,7 +128,7 @@ public class GameWindow {
 			}
 			
 			
-			// Get vertical collision
+			// Get collision between ray and vertical wall
 			int xDir = (rayAngle < Math.PI) ? 1 : -1;
 			collision = false;
 			
@@ -162,9 +169,19 @@ public class GameWindow {
 				xTile += xDir;
 			}
 			
-			// TODO: Fix magic number
-			double wallHeight = 1000/(rayLength*Math.cos(rayAngleDiff));
-			g.drawLine(i, (int)(HEIGHT/2-wallHeight/2), i, (int)(HEIGHT/2+wallHeight/2));
+			double distanceToWall = rayLength*Math.cos(rayAngleDiff);
+			
+			// Store ray end points
+			rayEndPoints[i][0] = rayX;
+			rayEndPoints[i][1] = rayY;
+			
+			
+			//  perceived height at viewport        real height
+			// ------------------------------  =  ---------------
+			//       distance to viewport          real distance
+			
+			double wallHeightPx = DISTANCE_TO_VIEWPORT_PX * 1/distanceToWall;
+			g.drawLine(i, (int)(HEIGHT/2-wallHeightPx/2), i, (int)(HEIGHT/2+wallHeightPx/2));
 		}
 		
 		g.dispose();

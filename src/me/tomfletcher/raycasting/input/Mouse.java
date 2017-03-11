@@ -11,8 +11,18 @@ import java.awt.image.BufferedImage;
 
 public class Mouse extends MouseMotionAdapter {
 	
+	private static Robot r;
+	
 	private static int originX, originY;
 	public static int dx, dy;
+	
+	public Mouse() {
+		try {
+			r = new Robot();
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
@@ -24,12 +34,7 @@ public class Mouse extends MouseMotionAdapter {
 		originX = x;
 		originY = y;
 		
-		try {
-			Robot r = new Robot();
-			r.mouseMove(windowX+x, windowY+y);
-		} catch (AWTException e) {
-			e.printStackTrace();
-		}
+		r.mouseMove(windowX+x, windowY+y);
 	}
 	
 	public static Cursor createBlankCursor() {

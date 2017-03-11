@@ -14,7 +14,6 @@ public class MapWindow {
 	
 	private static final int TILE_SIZE = 25;
 	private static final int PLAYER_RADIUS = 5;
-	private static final int RAY_LENGTH = 50;
 	
 	private JFrame frame;
 	private Canvas canvas;
@@ -79,99 +78,11 @@ public class MapWindow {
 		
 		// Draw rays
 		g.setColor(Color.GREEN);
-		for(int i = 0; i < GameWindow.WIDTH; i++) {
-			// TODO: Only calculate rayAngleDiff values once
-			double viewportX = (GameWindow.VIEWPORT_WIDTH/GameWindow.WIDTH)*i - GameWindow.VIEWPORT_WIDTH/2;
-			double rayAngleDiff = Math.atan2(viewportX, GameWindow.DISTANCE_TO_VIEWPORT);
+		for(double[] rayEndPoint: GameWindow.rayEndPoints) {
+			int rayPx = (int)(rayEndPoint[0]*TILE_SIZE);
+			int rayPy = (int)(rayEndPoint[1]*TILE_SIZE);
 			
-			double rayAngle = (angle + rayAngleDiff) % (Math.PI*2);
-			if(rayAngle < 0) {
-				rayAngle += Math.PI*2;
-			}
-			
-			double rayX = playerX+Math.sin(rayAngle)*RAY_LENGTH;
-			double rayY = playerY-Math.cos(rayAngle)*RAY_LENGTH;
-			
-			// Get horizontal collision
-			int yDir = (rayAngle > Math.PI/2) && (rayAngle < Math.PI*3/2) ? 1 : -1;
-			boolean collision = false;
-			double rayLength = Double.MAX_VALUE;
-			
-			double playerYOffset = playerY % 1;
-			double xDiff = -Math.tan(rayAngle)*yDir;
-			int yTile = (int)playerY + yDir;
-			
-			if(yDir == 1) {
-				playerYOffset = 1-playerYOffset;
-			}
-			
-			double x = playerX + xDiff*playerYOffset;
-			
-			while(!collision) {
-				int xTile = (int) x;
-				
-				if(map.getWallAt(xTile, yTile) == 1) {
-					collision = true;
-					rayX = x;
-					rayY = yTile;
-					if(yDir == -1) {
-						rayY++;
-					}
-					
-					double dx = rayX - playerX;
-					double dy = rayY - playerY;
-					rayLength = Math.sqrt(dx*dx + dy*dy);
-				}
-				
-				x += xDiff;
-				yTile += yDir;
-			}
-			
-			
-			// Get vertical collision
-			int xDir = (rayAngle < Math.PI) ? 1 : -1;
-			collision = false;
-			
-			double playerXOffset = playerX % 1;
-			double yDiff = Math.tan(rayAngle-Math.PI/2)*xDir;
-			int xTile = (int)playerX + xDir;
-			
-			if(xDir == 1) {
-				playerXOffset = 1-playerXOffset;
-			}
-			
-			double y = playerY + yDiff*playerXOffset;
-			
-			while(!collision) {
-				yTile = (int) y;
-				
-				if(map.getWallAt(xTile, yTile) == 1) {
-					collision = true;
-					double newRayY = y;
-					double newRayX = xTile;
-					if(xDir == -1) {
-						newRayX++;
-					}
-					
-					double dx = newRayX - playerX;
-					double dy = newRayY - playerY;
-					double dist = Math.sqrt(dx*dx + dy*dy);
-					
-					if(dist < rayLength) {
-						rayX = newRayX;
-						rayY = newRayY;
-					}
-					
-				}
-				
-				y += yDiff;
-				xTile += xDir;
-			}
-			
-			
-			int rayPX = (int)(rayX*TILE_SIZE);
-			int rayPY = (int)(rayY*TILE_SIZE);
-			g.drawLine(playerPX, playerPY, rayPX, rayPY);
+			g.drawLine(playerPX, playerPY, rayPx, rayPy);
 		}
 		
 		// Draw player angle
