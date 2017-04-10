@@ -28,11 +28,14 @@ public class GameWindow {
 	private Canvas canvas;
 	
 	private World world;
+	private Texture brickTexture;
 	
 	private double[] rayAngleDiffs;
 	
 	public GameWindow(World world) {
 		this.world = world;
+		
+		brickTexture = new Texture("brick.jpg");
 		
 		rayEndPoints = new double[WIDTH][2];
 		
@@ -191,7 +194,7 @@ public class GameWindow {
 			
 			double wallHeightPx = DISTANCE_TO_VIEWPORT_PX * 1/distanceToWall;
 			
-			int colour = (int) (textureOffset * 255);
+			int colour = brickTexture.getPixel((int) (textureOffset * 512), 0);
 			g.setColor(new Color(colour));
 			
 			g.drawLine(i, (int)(HEIGHT/2-wallHeightPx/2), i, (int)(HEIGHT/2+wallHeightPx/2));
