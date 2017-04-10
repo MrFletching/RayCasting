@@ -4,6 +4,9 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
+import java.util.Arrays;
 
 import javax.swing.JFrame;
 
@@ -26,6 +29,8 @@ public class GameWindow {
 	
 	private JFrame frame;
 	private Canvas canvas;
+	private BufferedImage screen;
+	private int[] pixels;
 	
 	private World world;
 	private Texture brickTexture;
@@ -36,6 +41,8 @@ public class GameWindow {
 		this.world = world;
 		
 		brickTexture = new Texture("brick.jpg");
+		screen = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		pixels = ((DataBufferInt) screen.getRaster().getDataBuffer()).getData();
 		
 		rayEndPoints = new double[WIDTH][2];
 		
@@ -74,12 +81,8 @@ public class GameWindow {
 			return;
 		}
 		
-		Graphics g = bs.getDrawGraphics();
-		
-		// Fill background
-		g.setColor(Color.WHITE);
-		g.fillRect(0, 0, WIDTH, HEIGHT);
-		
+		// Clear screen
+		Arrays.fill(pixels, 0);
 		
 		Player player = world.getPlayer();
 		
@@ -90,7 +93,6 @@ public class GameWindow {
 		Map map = world.getMap();
 		
 		// Draw walls
-		g.setColor(Color.BLACK);
 		
 		for(int i = 0; i < WIDTH; i++) {
 			double rayAngle = (angle + rayAngleDiffs[i]) % (Math.PI*2);
@@ -194,12 +196,25 @@ public class GameWindow {
 			
 			double wallHeightPx = DISTANCE_TO_VIEWPORT_PX * 1/distanceToWall;
 			
-			int colour = brickTexture.getPixel((int) (textureOffset * 512), 0);
-			g.setColor(new Color(colour));
+			int yStart = (int)(HEIGHT/2-wallHeightPx/2);
+			int yEnd = (int)(HEIGHT/2+wallHeightPx/2);
 			
-			g.drawLine(i, (int)(HEIGHT/2-wallHeightPx/2), i, (int)(HEIGHT/2+wallHeightPx/2));
+			for(int j = yStart; j < yEnd; j++) {
+				if(j < 0 || j >= HEIGHT) {
+					continue;
+				}
+				
+				double heightOffset = (j - yStart) / wallHeightPx;
+				int colour = brickTexture.getPixel((int) (textureOffset * 512), (int) (heightOffset * 512));
+				
+				pixels[j*WIDTH+i] = colour;
+			}
+			
 		}
 		
+		// Draw image to screen
+		Graphics g = bs.getDrawGraphics();
+		g.drawImage(screen, 0, 0, null);
 		g.dispose();
 		bs.show();
 	}
