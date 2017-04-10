@@ -102,6 +102,7 @@ public class GameWindow {
 			int yDir = (rayAngle > Math.PI/2) && (rayAngle < Math.PI*3/2) ? 1 : -1;
 			boolean collision = false;
 			double rayLength = Double.MAX_VALUE;
+			double textureOffset = 0;
 			
 			double playerYOffset = playerY % 1;
 			double xDiff = -Math.tan(rayAngle)*yDir;
@@ -127,6 +128,7 @@ public class GameWindow {
 					double dx = rayX - playerX;
 					double dy = rayY - playerY;
 					rayLength = Math.sqrt(dx*dx + dy*dy);
+					textureOffset = rayX % 1;
 				}
 				
 				x += xDiff;
@@ -167,6 +169,7 @@ public class GameWindow {
 						rayLength = dist;
 						rayX = newRayX;
 						rayY = newRayY;
+						textureOffset = rayY % 1;
 					}
 					
 				}
@@ -187,6 +190,10 @@ public class GameWindow {
 			//       distance to viewport          real distance
 			
 			double wallHeightPx = DISTANCE_TO_VIEWPORT_PX * 1/distanceToWall;
+			
+			int colour = (int) (textureOffset * 255);
+			g.setColor(new Color(colour));
+			
 			g.drawLine(i, (int)(HEIGHT/2-wallHeightPx/2), i, (int)(HEIGHT/2+wallHeightPx/2));
 		}
 		
