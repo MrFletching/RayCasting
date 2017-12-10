@@ -20,10 +20,13 @@ public class GameWindow {
 	
 	public static final double VIEWPORT_WIDTH = 1;
 	public static final double PX_PER_UNIT = WIDTH/VIEWPORT_WIDTH;
-	public static final double VIEWPORT_HEIGHT = HEIGHT*PX_PER_UNIT;
+	public static final double VIEWPORT_HEIGHT = HEIGHT/PX_PER_UNIT;
 	
 	public static final double DISTANCE_TO_VIEWPORT = 1;
 	public static final double DISTANCE_TO_VIEWPORT_PX = DISTANCE_TO_VIEWPORT*PX_PER_UNIT;
+	
+	public static final double WALL_HEIGHT = 1;
+	public static final double PLAYER_HEIGHT = 0.5;
 	
 	public static double[][] rayEndPoints;
 	
@@ -34,6 +37,8 @@ public class GameWindow {
 	
 	private World world;
 	private Texture brickTexture;
+	private Texture stoneTexture;
+	private Texture grassTexture;
 	
 	private double[] rayAngleDiffs;
 	
@@ -41,6 +46,9 @@ public class GameWindow {
 		this.world = world;
 		
 		brickTexture = new Texture("brick.jpg");
+		stoneTexture = new Texture("stone.jpg");
+		grassTexture = new Texture("grass.jpg");
+		
 		screen = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		pixels = ((DataBufferInt) screen.getRaster().getDataBuffer()).getData();
 		
@@ -92,7 +100,7 @@ public class GameWindow {
 		
 		Map map = world.getMap();
 		
-		// Draw walls
+		// Draw walls and floor
 		
 		for(int i = 0; i < WIDTH; i++) {
 			double rayAngle = (angle + rayAngleDiffs[i]) % (Math.PI*2);
@@ -183,7 +191,9 @@ public class GameWindow {
 				xTile += xDir;
 			}
 			
-			double distanceToWall = rayLength*Math.cos(rayAngleDiffs[i]);
+			double rayAngleDiffCos = Math.cos(rayAngleDiffs[i]);
+			
+			double distanceToWall = rayLength*rayAngleDiffCos;
 			
 			// Store ray end points
 			rayEndPoints[i][0] = rayX;
@@ -194,7 +204,7 @@ public class GameWindow {
 			// ------------------------------  =  ---------------
 			//       distance to viewport          real distance
 			
-			double wallHeightPx = DISTANCE_TO_VIEWPORT_PX * 1/distanceToWall;
+			double wallHeightPx = DISTANCE_TO_VIEWPORT_PX * WALL_HEIGHT/distanceToWall;
 			
 			int yStart = (int)(HEIGHT/2-wallHeightPx/2);
 			int yEnd = (int)(HEIGHT/2+wallHeightPx/2);
@@ -206,6 +216,28 @@ public class GameWindow {
 				
 				double heightOffset = (j - yStart) / wallHeightPx;
 				int colour = brickTexture.getPixel((int) (textureOffset * 512), (int) (heightOffset * 512));
+				
+				pixels[j*WIDTH+i] = colour;
+			}
+			
+			double rayAngleSin = Math.sin(rayAngle);
+			double rayAngleCos = Math.cos(rayAngle);
+			
+			// Draw floor
+			for(int j = yEnd; j < HEIGHT; j++) {
+				
+				double jUnitsOffset = j - HEIGHT/2;
+				double straightDistanceToFloor = DISTANCE_TO_VIEWPORT_PX * (PLAYER_HEIGHT / jUnitsOffset);
+				
+				double distanceToFloor = straightDistanceToFloor / rayAngleDiffCos;
+				
+				double floorOffsetX = distanceToFloor * rayAngleSin;
+				double floorOffsetY = distanceToFloor * rayAngleCos;
+				
+				double floorX = playerX + floorOffsetX;
+				double floorY = playerY - floorOffsetY;
+				
+				int colour = stoneTexture.getPixel((int) (floorX * 512)%512, (int) (floorY * 512)%512);
 				
 				pixels[j*WIDTH+i] = colour;
 			}
